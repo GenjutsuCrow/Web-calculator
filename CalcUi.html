@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            padding: 20px;
+        }
+        .display {
+            width: 100%;
+            height: 60px;
+            border: none;
+            background-color: #f7f7f7;
+            text-align: right;
+            font-size: 2rem;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        button {
+            height: 60px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #d4d4d4;
+        }
+        button.operation {
+            background-color: #ff9f43;
+            color: white;
+        }
+        button.operation:hover {
+            background-color: #ff8c00;
+        }
+        button.equals {
+            background-color: #54a0ff;
+            color: white;
+            grid-column: span 2;
+        }
+        button.equals:hover {
+            background-color: #407bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" class="display" id="display" disabled>
+        <div class="buttons">
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operation" onclick="chooseOperation('/')">÷</button>
+
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operation" onclick="chooseOperation('*')">×</button>
+
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operation" onclick="chooseOperation('-')">−</button>
+
+            <button onclick="appendNumber('0')">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
+            <button class="operation" onclick="chooseOperation('+')">+</button>
+
+            <button onclick="clearDisplay()" style="grid-column: span 4; background-color: #f44336; color: white;">C</button>
+        </div>
+    </div>
+
+    <script>
+        let displayValue = '';
+        let firstOperand = null;
+        let secondOperand = null;
+        let currentOperation = null;
+
+        const display = document.getElementById('display');
+
+        function appendNumber(number) {
+            if (currentOperation && !secondOperand) {
+                displayValue = '';
+            }
+            displayValue += number;
+            display.value = displayValue;
+            if (currentOperation) {
+                secondOperand = parseFloat(displayValue);
+            }
+        }
+
+        function chooseOperation(operation) {
+            if (firstOperand === null) {
+                firstOperand = parseFloat(displayValue);
+            } else if (currentOperation) {
+                firstOperand = calculate();
+            }
+            currentOperation = operation;
+            secondOperand = null;
+        }
+
+        function calculate() {
+            if (currentOperation && firstOperand !== null && secondOperand !== null) {
+                let result;
+                switch (currentOperation) {
+                    case '+':
+                        result = firstOperand + secondOperand;
+                        break;
+                    case '-':
+                        result = firstOperand - secondOperand;
+                        break;
+                    case '*':
+                        result = firstOperand * secondOperand;
+                        break;
+                    case '/':
+                        result = secondOperand !== 0 ? firstOperand / secondOperand : 'Error';
+                        break;
+                    default:
+                        return;
+                }
+                displayValue = result;
+                display.value = displayValue;
+                firstOperand = result;
+                secondOperand = null;
+                currentOperation = null;
+                return result;
+            }
+        }
+
+        function clearDisplay() {
+            displayValue = '';
+            firstOperand = null;
+            secondOperand = null;
+            currentOperation = null;
+            display.value = '';
+        }
+    </script>
+</body>
+</html>
